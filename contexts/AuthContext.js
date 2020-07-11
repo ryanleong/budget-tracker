@@ -1,8 +1,11 @@
 import React, {
   createContext, useContext, useReducer, useMemo, useEffect,
 } from 'react';
+import Router from 'next/router'
 
 import api from '../utils/api'
+
+export const NOT_AUTHENTICATED = 'NOT_AUTHENTICATED';
 
 export const AuthContext = createContext();
 export const useAuthContext = () => useContext(AuthContext);
@@ -54,14 +57,22 @@ export default (ChildComponent) => (props) => {
     const getUser = async () => {
       dispatch({ type: SET_IS_LOADING, payload: true })
       const user = await api.fetchUser();
-      dispatch({ type: SET_USER, payload: user });
+      dispatch({ type: SET_USER, payload: !user.error ? user : NOT_AUTHENTICATED });
     }
-    getUser();
+
+    if (state.user === null) { getUser() }
   }, [])
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      <ChildComponent {...props} />
-    </AuthContext.Provider>
-  );
+  if (state.user === null) {
+    return <span>Loading...</span>
+  } else if (state.user === NOT_AUTHENTICATED) {
+    Router.push('/');
+    return null;
+  } else {
+    return (
+      <AuthContext.Provider value={contextValue}>
+        <ChildComponent {...props} />
+      </AuthContext.Provider>
+    );
+  }
 };

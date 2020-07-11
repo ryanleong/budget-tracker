@@ -17,7 +17,12 @@ class APIClient {
       const { data } = await this.client.get('/api/me');
       return data;
     } catch(error) {
-      return null;
+      return {
+        error: {
+          status: 401,
+          message: error.message
+        }
+      };
     }
   };
 }

@@ -3,7 +3,6 @@ import Head from 'next/head';
 import withAuthContext, { useAuthContext, SET_USER } from '../contexts/AuthContext'
 
 const Home = () => {
-  const { state, dispatch } = useAuthContext();
 
   return (
     <div className="container">
@@ -56,4 +55,4 @@ const Home = () => {
   )
 };
 
-export default withAuthContext(Home);
+export default Home;
