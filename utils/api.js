@@ -25,6 +25,20 @@ class APIClient {
       };
     }
   };
+
+  async createTransaction(formValues) {
+    try {
+      const { data } = await this.client.post('/api/transaction', formValues);
+      return data;
+    } catch(error) {
+      return {
+        error: {
+          status: error.status || 500,
+          message: error.message,
+        }
+      }
+    }
+  }
 }
 
 const api = new APIClient();
